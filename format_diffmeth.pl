@@ -98,9 +98,9 @@ my $newline;
 
 
 if ($usergroups eq "2"){
-	$header="#Chr,Start,End,Len,CpGs,Pr,Test,>Meth,Sample_count_R,Sample_count_S,$groups,$totalsamples\n";
+	$header="#Chr,Start,End,Len,CpGs,Pr,Test,>Meth,Sample_count_R,Sample_count_S,$groups,$totalsamples,line\n";
 	}else{
-	$header="#Chr,Start,End,Len,CpGs,Pr,Test,>Meth,$groups,$groups,$totalsamples\n";
+	$header="#Chr,Start,End,Len,CpGs,Pr,Test,>Meth,$groups,$groups,$totalsamples,line\n";
 	}
 
 $fname=~s/\.txt//;
@@ -108,11 +108,13 @@ my $fileOUT = "$fname.ORG.csv";
 open (OUT, ">$fileOUT") || die "ERROR, el archivo de output no abre";
 print OUT $header;
 
-
-
+## a counter is introduced to add a column "line" with line numbers that will be used by the R script that runs stats later
+my $count=0;
 
 foreach my $l (@lines){
-
+	
+	$count++;
+	
 ## to avoid the separation of the F statistic column with the comma, I change it here for the | symbol
 	$l=~s/\((\d+)\,(\d+)\)/\($1\|$2\)/;
 	my @line= split (/\t/, $l);
@@ -229,7 +231,7 @@ foreach my $l (@lines){
 
 
 ###>>> because we had removed the change of line character in line 209, we replace it.
-$newline=$newline."\n";
+$newline=$newline.",".$count."\n";
 ###>>>
 #chop $newline;
 #print "This is the new line:\n$newline\nNEW LINE\n";
